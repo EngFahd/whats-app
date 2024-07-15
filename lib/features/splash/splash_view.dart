@@ -22,10 +22,10 @@ class _SplashViewState extends State<SplashView> {
       () {
         // if (FirebaseAuth.instance.currentUser != null) {
         //   log("\nUser : ${FirebaseAuth.instance.currentUser}");
-        //   GoRouter.of(context).pushNamed(kHome);
+        //   GoRouter.of(context).push(kChat);
         // } else {
         // }
-        GoRouter.of(context).push(kLoginhView);
+          GoRouter.of(context).push(kLoginhView);
       },
     );
   }

@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:whats_app/core/helper/apis.dart';
 import 'package:whats_app/core/utils/firebase_functions.dart';
 import 'package:whats_app/core/utils/routes.dart';
-import 'package:whats_app/helper/dialogo.dart';
+import 'package:whats_app/core/helper/dialogo.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -55,7 +56,15 @@ class _LoginState extends State<Login> {
                   onPressed: () async {
                     try {
                       await FirebaseFunctions().signInWithGoogle();
+
                       await FirebaseFunctions().handelSignInGoogle();
+                      if ((await Apis.usersExists())) {
+                        GoRouter.of(context).push(kHome);
+                      } else {
+                        await Apis.createUser().then((valu) {
+                          GoRouter.of(context).push(kHome);
+                        });
+                      }
                       GoRouter.of(context).push(kHome);
                     } on Exception catch (e) {
                       log("signInWithGoogle : $e");

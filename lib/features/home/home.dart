@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:whats_app/features/home/widgets/chat_list_view.dart';
 
 class Home extends StatelessWidget {
   const Home({
@@ -31,6 +31,7 @@ class Home extends StatelessWidget {
           child: const Icon(Icons.comment_rounded),
         ),
       ),
+      body: const Chat(),
     );
   }
 }
