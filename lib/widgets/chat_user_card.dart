@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:whats_app/main.dart';
 import 'package:whats_app/models/chat_user_model.dart';
 
 class ChatUserCard extends StatelessWidget {
@@ -8,7 +9,7 @@ class ChatUserCard extends StatelessWidget {
   final ChatUserModel chatUserModel;
   @override
   Widget build(BuildContext context) {
-    var mq = MediaQuery.of(context).size;
+     mq = MediaQuery.of(context).size;
     return Card(
       margin: EdgeInsets.symmetric(horizontal: mq.width * .01, vertical: 4),
       elevation: 0.5,

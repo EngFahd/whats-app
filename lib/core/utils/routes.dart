@@ -1,13 +1,15 @@
 import 'package:go_router/go_router.dart';
-import 'package:whats_app/features/home/widgets/chat_list_view.dart';
-import 'package:whats_app/features/auth/login.dart';
-import 'package:whats_app/features/home/home.dart';
-import 'package:whats_app/features/splash/splash_view.dart';
+import 'package:whats_app/widgets/chat_list_view.dart';
+import 'package:whats_app/screen/login.dart';
+import 'package:whats_app/screen/home.dart';
+import 'package:whats_app/screen/profil.dart';
+import 'package:whats_app/screen/splash_view.dart';
 
 const String kSplashView = '/';
 const String kLoginhView = '/login';
 const String kHome = '/home';
 const String kChat = '/chat';
+const String kProfile = '/profile';
 
 class AppRouters {
   static final routes = GoRouter(routes: [
@@ -25,7 +27,10 @@ class AppRouters {
     ),
     GoRoute(
       path: kHome,
-      builder: (context, state) => const Chat(),
+      builder: (context, state) => const Chat(),),
+    GoRoute(
+      path: kProfile,
+      builder: (context, state) => const Profil(),
     ),
   ]);
 }

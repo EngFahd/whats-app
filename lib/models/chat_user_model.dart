@@ -9,16 +9,16 @@ class ChatUserModel {
     required this.lastActive,
     required this.name,
   });
-  late final bool isOnline;
-  late final String pushToken;
-  late final String id;
-  late final String createdAt;
-  late final String image;
-  late final String about;
-  late final String lastActive;
-  late final String name;
-  
-  ChatUserModel.fromJson(json){
+  late bool isOnline;
+  late String pushToken;
+  late String id;
+  late String createdAt;
+  late String image;
+  late String about;
+  late String lastActive;
+  late String name;
+
+  ChatUserModel.fromJson(json) {
     isOnline = json['is_online'];
     pushToken = json['push_token'];
     createdAt = json['created_at'];
@@ -29,7 +29,7 @@ class ChatUserModel {
     id = json['id'];
   }
 
-  Map<String , dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['is_online'] = isOnline;
     data['push_token'] = pushToken;

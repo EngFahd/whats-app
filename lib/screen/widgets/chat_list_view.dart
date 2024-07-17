@@ -5,7 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_app/core/helper/apis.dart';
 import 'package:whats_app/core/utils/constant.dart';
-import 'package:whats_app/core/widgets/chat_user_card.dart';
+import 'package:whats_app/main.dart';
+import 'package:whats_app/widgets/chat_user_card.dart';
 import 'package:whats_app/models/chat_user_model.dart';
 
 class Chat extends StatefulWidget {
@@ -21,7 +22,7 @@ List<ChatUserModel> chatUserList = [];
 class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
-    var mq = MediaQuery.of(context).size;
+     mq = MediaQuery.of(context).size;
     return StreamBuilder(
       stream: Apis.firestore
           .collection(FireStoreConstant.collectionNameUsers)

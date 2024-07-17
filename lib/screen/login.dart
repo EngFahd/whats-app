@@ -6,6 +6,7 @@ import 'package:whats_app/core/helper/apis.dart';
 import 'package:whats_app/core/utils/firebase_functions.dart';
 import 'package:whats_app/core/utils/routes.dart';
 import 'package:whats_app/core/helper/dialogo.dart';
+import 'package:whats_app/main.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -28,7 +29,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    var mq = MediaQuery.of(context).size;
+    mq = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -48,6 +49,7 @@ class _LoginState extends State<Login> {
               left: mq.width * 0.05,
               width: mq.width * 0.9,
               height: mq.height * 0.07,
+              
               child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightBlueAccent,
@@ -57,7 +59,7 @@ class _LoginState extends State<Login> {
                     try {
                       await FirebaseFunctions().signInWithGoogle();
 
-                      await FirebaseFunctions().handelSignInGoogle();
+                      // await FirebaseFunctions().handelSignInGoogle();
                       if ((await Apis.usersExists())) {
                         GoRouter.of(context).push(kHome);
                       } else {
