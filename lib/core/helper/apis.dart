@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:whats_app/core/utils/constant.dart';
 import 'package:whats_app/models/chat_user_model.dart';
 
@@ -18,6 +20,8 @@ class Apis {
   // get my profile
   static late ChatUserModel me;
 
+// to access cloud firebase
+  static FirebaseStorage storage = FirebaseStorage.instance;
   // users exists
   static Future<bool> usersExists() async {
     return (await firestore
@@ -75,5 +79,29 @@ class Apis {
           'about': me.about,
           // 'image' : me.image,
         }));
+  }
+
+// update photo profile
+  static Future<void> updateProfilePicture(File file) async {
+    //getting image file extension
+    final ext = file.path.split('.').last;
+    print('Extension: $ext');
+
+    //storage file ref with path
+    final ref = storage.ref().child('profile_pictures/${user.uid}.$ext');
+
+    //uploading image
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      print('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+    });
+
+    //updating image in firestore database
+    me.image = await ref.getDownloadURL();
+    await firestore
+        .collection('users')
+        .doc(user.uid)
+        .update({'image': me.image});
   }
 }

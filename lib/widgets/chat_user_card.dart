@@ -3,19 +3,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_app/main.dart';
 import 'package:whats_app/models/chat_user_model.dart';
+import 'package:whats_app/screen/chat_view.dart';
 
 class ChatUserCard extends StatelessWidget {
   const ChatUserCard({super.key, required this.chatUserModel});
   final ChatUserModel chatUserModel;
   @override
   Widget build(BuildContext context) {
-     mq = MediaQuery.of(context).size;
+    mq = MediaQuery.of(context).size;
     return Card(
       margin: EdgeInsets.symmetric(horizontal: mq.width * .01, vertical: 4),
       elevation: 0.5,
       // color: Colors.blue.shade100,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatView(
+                user: chatUserModel,
+              ),
+            ),
+          );
+        },
         child: ListTile(
           title: Text(
             chatUserModel.name,
@@ -35,7 +46,11 @@ class ChatUserCard extends StatelessWidget {
           ),
           leading: ClipRRect(
               borderRadius: BorderRadius.circular(mq.height * .3),
-              child: Image.network(chatUserModel.image)
+              child: Image.network(
+                chatUserModel.image,
+                height: mq.height * 0.055,
+                width: mq.height * 0.055,
+              )
               //  CachedNetworkImage(
               //   height: mq.height * 0.055,
               //   width: mq.height * 0.055,
@@ -44,7 +59,7 @@ class ChatUserCard extends StatelessWidget {
               //   errorWidget: (context, url, error) => const CircleAvatar(
               //     child: Icon(CupertinoIcons.person),
               //   ),
-           
+
               // ),
               ),
         ),

@@ -1,21 +1,24 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:whats_app/core/utils/routes.dart';
-import 'package:whats_app/screen/login.dart';
-import 'package:whats_app/screen/home.dart';
-import 'package:whats_app/screen/splash_view.dart';
 import 'package:whats_app/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const WhatsApp());
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((valu) async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    runApp(const WhatsApp());
+  });
 }
 
-var  mq ;
+var mq;
 
 class WhatsApp extends StatelessWidget {
   const WhatsApp({super.key});

@@ -21,7 +21,10 @@ class Home extends StatefulWidget {
 }
 
 // store all user
-List<ChatUserModel> chatUserList = [];
+List<ChatUserModel> _chatUserList = [];
+
+// add user searcching
+List<ChatUserModel> _searchList = [];
 bool _isSearching = false;
 
 class _HomeState extends State<Home> {
@@ -31,15 +34,33 @@ class _HomeState extends State<Home> {
     Apis.getSelfInfo();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           leading: const Icon(CupertinoIcons.home),
           title: _isSearching
-              ? const TextField(
-                  decoration: InputDecoration(border: InputBorder.none),
+              ? TextField(
+                  decoration: const InputDecoration(
+                      border: InputBorder.none, hintText: "Name, Email, ...."),
+                  autofocus: true,
+                  style: const TextStyle(fontSize: 17, letterSpacing: .5),
+                  onChanged: (value) {
+                    _searchList.clear();
+                    for (var i in _chatUserList) {
+                      if (i.name.toLowerCase().contains(value.toLowerCase())) {
+                        _searchList.add(i);
+                      }
+                      setState(() {
+                        _searchList;
+                      });
+                    }
+                  },
                 )
               : const Text('WhatsApp'),
           actions: [
@@ -77,6 +98,49 @@ class _HomeState extends State<Home> {
             child: const Icon(Icons.comment_rounded),
           ),
         ),
-        body: const Chat());
+        body: StreamBuilder(
+          stream: Apis.firestore
+              .collection(FireStoreConstant.collectionNameUsers)
+              .snapshots(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              // if data is loading
+              case ConnectionState.waiting:
+              case ConnectionState.none:
+                return const Center(child: CircularProgressIndicator());
+
+              // if some or all data loaded
+              case ConnectionState.active:
+              case ConnectionState.done:
+                // to map users
+                final data = snapshot.data!.docs;
+                _chatUserList =
+                    data.map((e) => ChatUserModel.fromJson(e)).toList();
+                if (_chatUserList.isNotEmpty) {
+                  return ListView.builder(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: mq.width * .04, vertical: 4),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: _isSearching
+                        ? _searchList.length
+                        : _chatUserList.length,
+                    itemBuilder: (context, index) {
+                      return ChatUserCard(
+                        chatUserModel: _isSearching
+                            ? _searchList[index]
+                            : _chatUserList[index],
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: Text("No Users"),
+                  );
+                }
+            }
+          },
+        ),
+      ),
+    );
   }
 }

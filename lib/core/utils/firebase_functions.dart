@@ -2,11 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:whats_app/core/helper/apis.dart';
-import 'package:whats_app/core/helper/dialogo.dart';
 
 class FirebaseFunctions {
   createUser({required email, required password}) async {

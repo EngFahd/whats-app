@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:whats_app/core/utils/routes.dart';
@@ -17,6 +18,9 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.white, statusBarColor: Colors.white));
     Future.delayed(
       const Duration(seconds: 1),
       () {
@@ -25,7 +29,7 @@ class _SplashViewState extends State<SplashView> {
         //   GoRouter.of(context).push(kChat);
         // } else {
         // }
-          GoRouter.of(context).push(kLoginhView);
+        GoRouter.of(context).push(kLoginhView);
       },
     );
   }

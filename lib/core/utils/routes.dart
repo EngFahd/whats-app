@@ -27,7 +27,7 @@ class AppRouters {
     ),
     GoRoute(
       path: kHome,
-      builder: (context, state) => const Chat(),),
+      builder: (context, state) =>  Chat(),),
     GoRoute(
       path: kProfile,
       builder: (context, state) => const Profil(),

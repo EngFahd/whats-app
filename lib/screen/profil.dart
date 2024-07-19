@@ -1,9 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:whats_app/core/helper/apis.dart';
 import 'package:whats_app/core/helper/dialogo.dart';
 import 'package:whats_app/core/utils/routes.dart';
@@ -20,9 +23,87 @@ class Profil extends StatefulWidget {
   State<Profil> createState() => _ProfilState();
 }
 
+// form validations
 final formKey = GlobalKey<FormState>();
 
+// to save import image
+String? _imageChose;
+
 class _ProfilState extends State<Profil> {
+  void showBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            padding:
+                EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .05),
+            children: [
+              const Text(
+                textAlign: TextAlign.center,
+                "Pick profile pecture",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          fixedSize: Size(mq.width * .3, mq.height * .15)),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        // Pick an image.
+                        final XFile? image =
+                            await picker.pickImage(source: ImageSource.gallery);
+                        if (image != null) {
+                          log(image.path);
+                          log(image.name);
+                          setState(() {
+                            _imageChose = image.path;
+                          });
+                          Apis.updateProfilePicture(File(_imageChose!))
+                              .then((valu) {
+                            Dialogo.showSnackBar(context, "Updated Sucessfuly");
+                          });
+                          GoRouter.of(context).pop();
+                        }
+                      },
+                      child: Image.asset("assets/images/add_image.png"),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          fixedSize: Size(mq.width * .3, mq.height * .15)),
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        // Pick an image.
+                        final XFile? image =
+                            await picker.pickImage(source: ImageSource.camera);
+                        if (image != null) {
+                          log(image.path);
+                          log(image.name);
+                          setState(() {
+                            _imageChose = image.path;
+                          });
+                          Apis.updateProfilePicture(File(_imageChose!));
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Image.asset("assets/images/camera.png"),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context).size;
@@ -60,22 +141,37 @@ class _ProfilState extends State<Profil> {
                   ),
                   Stack(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(mq.height * .5),
-                        child: Image.network(
-                          height: mq.height * .2,
-                          width: mq.height * .2,
-                          fit: BoxFit.fill,
-                          Apis.user.photoURL.toString(),
-                          // scale: .5,
-                        ),
-                      ),
+                      _imageChose != null
+                          ? ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(mq.height * .5),
+                              child: Image.file(
+                                height: mq.height * .2,
+                                width: mq.height * .2,
+                                fit: BoxFit.cover,
+                                File(_imageChose!),
+                                // scale: .5,
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(mq.height * .5),
+                              child: Image.network(
+                                height: mq.height * .2,
+                                width: mq.height * .2,
+                                fit: BoxFit.cover,
+                                Apis.user.photoURL.toString(),
+                                // scale: .5,
+                              ),
+                            ),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: MaterialButton(
                           elevation: 1,
-                          onPressed: () {},
+                          onPressed: () {
+                            showBottomSheet();
+                          },
                           color: Colors.white,
                           shape: const CircleBorder(),
                           child: const Icon(
