@@ -1,22 +1,39 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:whats_app/core/helper/apis.dart';
 import 'package:whats_app/models/chat_user_model.dart';
+import 'package:whats_app/models/massage_model.dart';
+import 'package:whats_app/widgets/massage_list_view.dart';
 
 import '../main.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
   const ChatView({super.key, required this.user});
   final ChatUserModel user;
+
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  final TextEditingController _textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 234, 248, 255),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         flexibleSpace: _appBar(context),
       ),
       body: Column(
-        children: [_chatInput()],
+        children: [
+          Expanded(
+            child: MassageListView(
+              chatUserModel: widget.user,
+            ),
+          ),
+          _chatInput(),
+        ],
       ),
     );
   }
@@ -38,7 +55,7 @@ class ChatView extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(mq.height * .3),
               child: Image.network(
-                user.image,
+                widget.user.image,
                 height: mq.height * 0.055,
                 width: mq.height * 0.055,
               ),
@@ -51,7 +68,7 @@ class ChatView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.name,
+                  widget.user.name,
                   style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -76,7 +93,7 @@ class ChatView extends StatelessWidget {
   Widget _chatInput() {
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: mq.height * .01, horizontal: mq.width * .03),
+          vertical: mq.height * .04, horizontal: mq.width * .03),
       child: Row(
         children: [
           Expanded(
@@ -91,11 +108,13 @@ class ChatView extends StatelessWidget {
                       Icons.emoji_emotions,
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                       child: TextField(
+                    controller: _textEditingController,
+                    onSubmitted: (value) {},
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                         hintText: "Type some thing...",
                         hintStyle: TextStyle(color: Colors.blueAccent),
                         border: InputBorder.none),
@@ -118,7 +137,13 @@ class ChatView extends StatelessWidget {
             ),
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              if (_textEditingController.text.isNotEmpty) {
+                Apis.sendMessage(
+                    widget.user, _textEditingController.text, Type.text);
+                    _textEditingController.clear();
+              }
+            },
             minWidth: 0,
             padding:
                 const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
