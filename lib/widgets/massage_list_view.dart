@@ -55,6 +55,7 @@ class _MassageCardState extends State<MassageListView> {
             //     sent: "12:05"));
             if (list.isNotEmpty) {
               return ListView.builder(
+                reverse: true,
                 padding: EdgeInsets.symmetric(
                     horizontal: mq.width * .04, vertical: 4),
                 physics: const BouncingScrollPhysics(),

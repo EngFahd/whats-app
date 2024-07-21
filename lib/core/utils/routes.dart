@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:whats_app/screen/view_profile_screen.dart';
 import 'package:whats_app/widgets/chat_list_view.dart';
 import 'package:whats_app/screen/login.dart';
 import 'package:whats_app/screen/home.dart';
@@ -10,6 +11,7 @@ const String kLoginhView = '/login';
 const String kHome = '/home';
 const String kChat = '/chat';
 const String kProfile = '/profile';
+const String kViewProfileScreen = '/viewProfileScreen';
 
 class AppRouters {
   static final routes = GoRouter(routes: [
@@ -31,6 +33,10 @@ class AppRouters {
     GoRoute(
       path: kProfile,
       builder: (context, state) => const Profil(),
+    ),
+    GoRoute(
+      path: kViewProfileScreen,
+      builder: (context, state) => const ViewProfileScreen(),
     ),
   ]);
 }

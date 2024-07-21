@@ -118,9 +118,11 @@ class _ProfilState extends State<Profil> {
           padding: const EdgeInsets.all(8.0),
           child: FloatingActionButton.extended(
             onPressed: () async {
+              Apis.updateActiveStatus(false);
               await FirebaseAuth.instance.signOut().then((valu) async {
                 await GoogleSignIn().signOut().then((valu) {
-                  GoRouter.of(context).push(kLoginhView);
+                  Navigator.pop(context);
+                  Apis.auth = FirebaseAuth.instance;
                 });
               });
             },

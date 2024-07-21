@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:whats_app/core/helper/apis.dart';
@@ -32,9 +35,17 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     Apis.getSelfInfo();
-  }
+    Apis.updateActiveStatus(true);
+    SystemChannels.lifecycle.setMessageHandler((massage) {
+      log("$massage");
+      if (Apis.auth.currentUser != null) {
+  if (massage.toString().contains("paused")) Apis.updateActiveStatus(false);
+  if (massage.toString().contains("resumed")) Apis.updateActiveStatus(true);
+}
 
-  
+      return Future.value(massage);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

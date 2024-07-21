@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whats_app/core/helper/apis.dart';
 import 'package:whats_app/core/helper/my_date.dart';
@@ -35,7 +37,9 @@ class GreenMassages extends StatelessWidget {
       children: [
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(mq.height * .025),
+            padding: EdgeInsets.all(massageModel.msg == Type.image
+                ? mq.height * .005
+                : mq.height * .025),
             margin: EdgeInsets.symmetric(
               horizontal: mq.width * .04,
               vertical: mq.height * .01,
@@ -55,10 +59,19 @@ class GreenMassages extends StatelessWidget {
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 )),
-            child: Text(
-              massageModel.msg,
-              style: const TextStyle(fontSize: 15),
-            ),
+            child: massageModel.type == Type.text
+                ? Text(
+                    massageModel.msg,
+                    style: const TextStyle(fontSize: 15),
+                  )
+                : CachedNetworkImage(
+                    imageUrl: massageModel.msg,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const CircleAvatar(
+                      child: Icon(CupertinoIcons.person),
+                    ),
+                  ),
           ),
         ),
         Padding(
@@ -112,7 +125,9 @@ class BlueMassage extends StatelessWidget {
         ),
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(mq.height * .025),
+            padding: EdgeInsets.all(massageModel.msg == Type.image
+                ? mq.height * .005
+                : mq.height * .025),
             margin: EdgeInsets.symmetric(
               horizontal: mq.width * .04,
               vertical: mq.height * .01,
@@ -132,10 +147,19 @@ class BlueMassage extends StatelessWidget {
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 )),
-            child: Text(
-              massageModel.msg,
-              style: const TextStyle(fontSize: 15),
-            ),
+            child: massageModel.type == Type.text
+                ? Text(
+                    massageModel.msg,
+                    style: const TextStyle(fontSize: 15),
+                  )
+                : CachedNetworkImage(
+                    imageUrl: massageModel.msg,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const CircleAvatar(
+                      child: Icon(CupertinoIcons.person),
+                    ),
+                  ),
           ),
         ),
       ],
