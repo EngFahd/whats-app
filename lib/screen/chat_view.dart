@@ -1,17 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:whats_app/core/helper/apis.dart';
-import 'package:whats_app/core/helper/my_date.dart';
-import 'package:whats_app/core/utils/routes.dart';
 import 'package:whats_app/models/chat_user_model.dart';
 import 'package:whats_app/models/massage_model.dart';
-import 'package:whats_app/screen/view_profile_screen.dart';
+import 'package:whats_app/widgets/custom_app_bar_chat_view.dart';
+import 'package:whats_app/widgets/emoji_widget.dart';
 import 'package:whats_app/widgets/massage_list_view.dart';
 
 import '../main.dart';
@@ -38,7 +34,7 @@ class _ChatViewState extends State<ChatView> {
         backgroundColor: const Color.fromARGB(255, 234, 248, 255),
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          flexibleSpace: _appBar(context),
+          flexibleSpace:CustomAppBarChatView(chatUserModel: widget.user,),
         ),
         body: Column(
           children: [
@@ -56,118 +52,15 @@ class _ChatViewState extends State<ChatView> {
               ),
             _chatInput(),
             if (emoji)
-              Offstage(
-                offstage: false,
-                child: SizedBox(
-                  height: mq.height * 0.35,
-                  child: EmojiPicker(
-                    onEmojiSelected: (category, emoji) {},
-                    textEditingController: _textEditingController,
-                    scrollController: _scrollController,
-                    config: Config(
-                      swapCategoryAndBottomBar: false,
-                      skinToneConfig: const SkinToneConfig(),
-                      categoryViewConfig: const CategoryViewConfig(),
-                      bottomActionBarConfig: const BottomActionBarConfig(),
-                      searchViewConfig: const SearchViewConfig(),
-                      checkPlatformCompatibility: true,
-                      height: 256,
-                      emojiViewConfig: EmojiViewConfig(
-                        columns: 7,
-                        verticalSpacing: 0,
-                        horizontalSpacing: 0,
-                        // backgroundColor: const Color(0xFFF2F2F2),
-                        emojiSizeMax: (Platform.isIOS ? 1.20 : 1.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              EmogiWidget(
+                  textEditingController: _textEditingController,
+                  scrollController: _scrollController),
           ],
         ),
       ),
     );
   }
 
-  Widget _appBar(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) {
-            return ViewProfileScreen(
-              user: widget.user,
-            );
-          },
-        ));
-      },
-      child: StreamBuilder(
-          stream: Apis.getUserInfo(widget.user),
-          builder: (context, snapshot) {
-            final data = snapshot.data?.docs;
-            final list =
-                data?.map((e) => ChatUserModel.fromJson(e.data())).toList() ??
-                    [];
-
-            return Container(
-              margin: const EdgeInsets.only(top: 30, left: 20, right: 20),
-              child: InkWell(
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(
-                        Icons.arrow_back,
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(mq.height * .3),
-                      child: Image.network(
-                        list.isNotEmpty ? list[0].image : widget.user.image,
-                        height: mq.height * 0.055,
-                        width: mq.height * 0.055,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          list.isNotEmpty ? list[0].name : widget.user.name,
-                          style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          list.isNotEmpty
-                              ? list[0].isOnline
-                                  ? "isOnline"
-                                  : MyDate.getLastActiveTime(
-                                      context: context,
-                                      lastActive: list[0].lastActive)
-                              : MyDate.getLastActiveTime(
-                                  context: context,
-                                  lastActive: widget.user.lastActive),
-                          style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.black45,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            );
-          }),
-    );
-  }
 
   Widget _chatInput() {
     return Padding(
@@ -279,3 +172,4 @@ class _ChatViewState extends State<ChatView> {
     );
   }
 }
+

@@ -267,30 +267,3 @@ class _ProfilState extends State<Profil> {
   }
 }
 
-class ProfileTextFormField extends StatelessWidget {
-  const ProfileTextFormField({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      onSaved: (newValue) {
-        Apis.me.name = newValue ?? "";
-      },
-      validator: (value) {
-        return value != null && value.isNotEmpty ? null : "Name is required";
-      },
-      initialValue: Apis.user.displayName,
-      decoration: InputDecoration(
-        prefixIcon: const Icon(
-          Icons.person,
-          color: Colors.blue,
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        hintText: "hi",
-        label: const Text("Name"),
-      ),
-    );
-  }
-}

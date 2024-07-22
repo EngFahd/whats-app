@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:whats_app/core/utils/routes.dart';
@@ -17,13 +16,11 @@ void main() async {
     runApp(const WhatsApp());
   });
 }
-
 var mq;
-
 class WhatsApp extends StatelessWidget {
   const WhatsApp({super.key});
 
-  // This widget is the root of your application.
+  // This widget is the root of yo`   ur application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(

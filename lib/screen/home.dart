@@ -1,18 +1,14 @@
 import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:whats_app/core/helper/apis.dart';
 import 'package:whats_app/core/utils/constant.dart';
-import 'package:whats_app/core/utils/routes.dart';
 import 'package:whats_app/main.dart';
 import 'package:whats_app/models/chat_user_model.dart';
 import 'package:whats_app/screen/profil.dart';
-import 'package:whats_app/widgets/chat_list_view.dart';
 import 'package:whats_app/widgets/chat_user_card.dart';
 
 class Home extends StatefulWidget {
@@ -39,9 +35,13 @@ class _HomeState extends State<Home> {
     SystemChannels.lifecycle.setMessageHandler((massage) {
       log("$massage");
       if (Apis.auth.currentUser != null) {
-  if (massage.toString().contains("paused")) Apis.updateActiveStatus(false);
-  if (massage.toString().contains("resumed")) Apis.updateActiveStatus(true);
-}
+        if (massage.toString().contains("paused")) {
+          Apis.updateActiveStatus(false);
+        }
+        if (massage.toString().contains("resumed")) {
+          Apis.updateActiveStatus(true);
+        }
+      }
 
       return Future.value(massage);
     });
@@ -109,49 +109,58 @@ class _HomeState extends State<Home> {
             child: const Icon(Icons.comment_rounded),
           ),
         ),
-        body: StreamBuilder(
-          stream: Apis.firestore
-              .collection(FireStoreConstant.collectionNameUsers)
-              .snapshots(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              // if data is loading
-              case ConnectionState.waiting:
-              case ConnectionState.none:
-                return const Center(child: CircularProgressIndicator());
-
-              // if some or all data loaded
-              case ConnectionState.active:
-              case ConnectionState.done:
-                // to map users
-                final data = snapshot.data!.docs;
-                _chatUserList =
-                    data.map((e) => ChatUserModel.fromJson(e)).toList();
-                if (_chatUserList.isNotEmpty) {
-                  return ListView.builder(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: mq.width * .04, vertical: 4),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: _isSearching
-                        ? _searchList.length
-                        : _chatUserList.length,
-                    itemBuilder: (context, index) {
-                      return ChatUserCard(
-                        chatUserModel: _isSearching
-                            ? _searchList[index]
-                            : _chatUserList[index],
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(
-                    child: Text("No Users"),
-                  );
-                }
-            }
-          },
-        ),
+        body: const HomeViewBody(),
       ),
+    );
+  }
+}
+
+class HomeViewBody extends StatelessWidget {
+  const HomeViewBody({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: Apis.firestore
+          .collection(FireStoreConstant.collectionNameUsers)
+          .snapshots(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          // if data is loading
+          case ConnectionState.waiting:
+          case ConnectionState.none:
+            return const Center(child: CircularProgressIndicator());
+
+          // if some or all data loaded
+          case ConnectionState.active:
+          case ConnectionState.done:
+            // to map users
+            final data = snapshot.data!.docs;
+            _chatUserList = data.map((e) => ChatUserModel.fromJson(e)).toList();
+            if (_chatUserList.isNotEmpty) {
+              return ListView.builder(
+                padding: EdgeInsets.symmetric(
+                    horizontal: mq.width * .04, vertical: 4),
+                physics: const BouncingScrollPhysics(),
+                itemCount:
+                    _isSearching ? _searchList.length : _chatUserList.length,
+                itemBuilder: (context, index) {
+                  return ChatUserCard(
+                    chatUserModel: _isSearching
+                        ? _searchList[index]
+                        : _chatUserList[index],
+                  );
+                },
+              );
+            } else {
+              return const Center(
+                child: Text("No Users"),
+              );
+            }
+        }
+      },
     );
   }
 }
